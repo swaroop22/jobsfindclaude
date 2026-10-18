@@ -1,0 +1,17 @@
+{
+  "greenhouse": ["coherehealth", "privatehealthmanagement"],
+  "lever": ["clarifyhealth"],
+  "workday": [
+    "https://r1rcm.wd1.myworkdayjobs.com/R1RCM",
+    "https://ensemblehp.wd5.myworkdayjobs.com/en-US/EnsembleHealthPartnersCareers",
+    "https://rochester.wd5.myworkdayjobs.com/UR_Staff",
+    "https://corrohealth.wd1.myworkdayjobs.com/Corro",
+    "https://pnc.wd5.myworkdayjobs.com/External",
+    "https://usbank.wd1.myworkdayjobs.com/US_Bank_Careers",
+    "https://keybank.wd5.myworkdayjobs.com/External_Career_Site"
+  ],
+  "icims": [
+    "https://careers-mrocorp.icims.com",
+    "https://careers-chsli.icims.com"
+  ]
+}
