@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 FIELDS = ["id", "source", "company", "title", "location", "url",
           "coverage_pct", "status", "notes"]
 
-DEFAULT_STATUS = "found"
+#: Valid values for the tracker's "status" column; shared with the CLI's
+#: `status` subcommand so the two can't drift out of sync.
+STATUSES = ["found", "applied", "interview", "rejected", "offer", "skip"]
+
+DEFAULT_STATUS = STATUSES[0]
 
 TrackerRow = dict[str, str]
 

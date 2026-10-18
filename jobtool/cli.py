@@ -15,18 +15,14 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import sys
 
 from jobtool import aggregate, tailor, tracker
+from jobtool.config import COMPANIES_PATH, TRACKER_PATH
 from jobtool.logging_config import configure_logging
 from jobtool.models import JobDict
 
 logger = logging.getLogger(__name__)
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-COMPANIES_PATH = os.path.join(BASE_DIR, "companies.json")
-TRACKER_PATH = os.path.join(BASE_DIR, "data", "applications.csv")
 
 MEDICAL_CODING_KEYWORDS = [
     "medical coder", "medical coding", "coding specialist", "coding analyst",
@@ -38,8 +34,22 @@ MEDICAL_CODING_KEYWORDS = [
 
 
 def load_companies() -> dict[str, list[str]]:
-    with open(COMPANIES_PATH) as f:
-        return json.load(f)
+    """Load the {platform: [slugs/urls]} map from COMPANIES_PATH.
+
+    Exits with a clear message rather than a raw traceback if the file is
+    missing or not valid JSON -- this is user-edited config, not internal
+    state, so the two most likely failures deserve an actionable error.
+    """
+    try:
+        with open(COMPANIES_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Companies config not found at {COMPANIES_PATH}. "
+              f"Set $JOBTOOL_COMPANIES_PATH or create the file.", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Companies config at {COMPANIES_PATH} is not valid JSON: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 def cmd_search(args: argparse.Namespace) -> None:
@@ -180,8 +190,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_status = sub.add_parser("status", help="Update tracker status for a job")
     p_status.add_argument("job_id")
-    p_status.add_argument(
-        "status", choices=["found", "applied", "interview", "rejected", "offer", "skip"])
+    p_status.add_argument("status", choices=tracker.STATUSES)
     p_status.add_argument("--notes", default=None)
     p_status.set_defaults(func=cmd_status)
 
